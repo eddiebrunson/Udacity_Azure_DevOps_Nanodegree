@@ -1,9 +1,4 @@
 {
-    "properties": {
-        "displayName": "Deny the creation of resources that do not have tags",
-        "mode": "Indexed",
-        "description": "Policy ensures all indexed resources are tagged"
-    },
     "policyRule": {
         "if": {
             "field": "[concat('tags'[', parameters('tagName'), ']')]",
