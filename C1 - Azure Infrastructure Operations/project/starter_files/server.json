@@ -15,7 +15,7 @@
 		"image_sku": "18.04-LTS",
 		"managed_image_resource_group_name": "azure_devOps",
 		"azure_tags": {
-			"environment": "development"
+			"environment": "development_azure_devOps"
 		},
 		"managed_image_name": "myPackerImage",
 		"location": "US East",
