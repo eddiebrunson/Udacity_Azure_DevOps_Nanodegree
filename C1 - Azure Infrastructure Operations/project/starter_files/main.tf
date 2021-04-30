@@ -74,7 +74,7 @@ resource "azurerm_network_security_group" "main" {
 }
 
 #Create Load Balancer
-resource "azurerm_lb" ",main" {
+resource "azurerm_lb" "main" {
     name                 = "${var.prefix}-lb"  
     location             = azurerm_resource_group.main.location
     resource_group_name  = azure_resource_group.main.name
