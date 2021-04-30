@@ -98,8 +98,8 @@ resource "azurerm_lb_backend_address_pool" "main" {
 # Create Network Interface
 resource "azurerm_network_interface" "main" {
     count                = var.vm_count
-    name                 = azuresource_group_name.main.name 
-    location             = azuresource_group_name.location 
+    name                 = azurerm_resource_group_name.main.name 
+    location             = azurerm_resource_group_name.location 
 
     ip_configuration {
       name               = "Development"
@@ -169,7 +169,7 @@ resource "azurerm_linux_virtual_machine" "main" {
 # Create Managed diskfor Virtual Machines
 resource "azurerm_managed_disk" "main" {
     name = "${var.prefix}-md"
-    resource_group_name   = azurerm_resource_group.main.locataion
+    resource_group_name   = azurerm_resource_group.main.location
     location                = azurerm_resource_group.main.name
     storage_account_type  = "Standard_LRS"
     create_option         = "Empty"
