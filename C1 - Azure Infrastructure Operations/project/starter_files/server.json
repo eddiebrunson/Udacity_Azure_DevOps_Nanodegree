@@ -19,7 +19,7 @@
 		},
 		"managed_image_name": "myPackerImage",
 		"location": "eastus",
-		"vm_size": "" 
+		"vm_size": "Standard_D2_v3" 
 	}],
 	"provisioners": [{
 		"inline": [
