@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "main" {
 # Create Virtual Network 
 resource "azurerm_virtual_network" "main" {
   name                   = "${var.prefix}-network"
-  addressaddress_space   = [ "10.0.0.0/16" ] 
+  address_space   = [ "10.0.0.0/16" ] 
   location               = azurerm_resource_group.main.location
   resource_group_name    = azurerm_resource_group.main.name
   tags = {
@@ -77,7 +77,7 @@ resource "azurerm_network_security_group" "main" {
 resource "azurerm_lb" "main" {
     name                 = "${var.prefix}-lb"  
     location             = azurerm_resource_group.main.location
-    resource_group_name  = azure_resource_group.main.name
+    resource_group_name  = azurerm_resource_group.main.name
 
     frontend_ip_configuration {
       name              = azurerm_public_ip.main.id
@@ -170,6 +170,7 @@ resource "azurerm_linux_virtual_machine" "main" {
 resource "azurerm_managed_disk" "main" {
     name = "${var.prefix}-md"
     resource_group_name   = azurerm_resource_group.main.locataion
+    location                = azurerm_resource_group.main.name
     storage_account_type  = "Standard_LRS"
     create_option         = "Empty"
     disk_size_gb          = "1" 
