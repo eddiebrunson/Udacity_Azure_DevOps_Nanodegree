@@ -98,6 +98,7 @@ resource "azurerm_lb_backend_address_pool" "main" {
 # Create Network Interface
 resource "azurerm_network_interface" "main" {
     count                = var.vm_count
+    name                 = "${var.prefix}-nic-${var.server_name[count.index]}"
     resource_group_name  = azurerm_resource_group.main.name 
     location             = azurerm_resource_group.main.location 
 
