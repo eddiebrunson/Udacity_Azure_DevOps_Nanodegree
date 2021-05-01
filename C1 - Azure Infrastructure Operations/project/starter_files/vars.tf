@@ -29,3 +29,8 @@ variable "vm_count" {
     default = "2"
   
 }
+
+variable "server_name" {
+  type = list
+  default = "int"
+}
