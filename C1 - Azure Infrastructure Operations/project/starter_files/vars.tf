@@ -5,7 +5,7 @@ variable "prefix" {
 
 variable "location" {
     description = "The Azure Regin that all resources in the project should be created"
-    default = "US East"
+    default = "eastus"
 }
 
 variable "environment" {
@@ -34,3 +34,4 @@ variable "server_name" {
   type = list
   default = ["int"]
 }
+
