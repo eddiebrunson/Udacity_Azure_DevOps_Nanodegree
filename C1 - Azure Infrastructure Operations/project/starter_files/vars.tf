@@ -32,6 +32,6 @@ variable "vm_count" {
 
 variable "server_name" {
   type = list
-  default = ["int"]
+  default = ["int", "uat"]
 }
 
