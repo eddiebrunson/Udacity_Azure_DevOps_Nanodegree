@@ -99,7 +99,7 @@ resource "azurerm_lb_backend_address_pool" "main" {
 resource "azurerm_network_interface" "main" {
     count                = var.vm_count
     name                 = azurerm_resource_group.main.name 
-    location             = azurerm_resource_group.location 
+    location             = azurerm_resource_group.main.location 
 
     ip_configuration {
       name               = "Development"
