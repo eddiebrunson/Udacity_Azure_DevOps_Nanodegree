@@ -3,12 +3,6 @@ provider "azurerm" {
   features {}  
 }
 
-data "terraform_remote_state" "resource_group" {
-backend = "azurerm"
-config = {
-  tenant_id = var.tenant_id
-}
-}
 # Create Resource Group
 resource "azurerm_resource_group" "main" {
   name                   ="${var.prefix}-rg"
