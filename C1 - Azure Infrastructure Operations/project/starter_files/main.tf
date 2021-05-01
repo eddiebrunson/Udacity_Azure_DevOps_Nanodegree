@@ -1,6 +1,7 @@
 # Configure Azure Provider
 provider "azurerm" {
   features {}  
+  tenant_id = "03430325-70fc-46b1-8d1d-ac0cff756ace"
 }
 
 # Create Resource Group
