@@ -118,6 +118,7 @@ resource "azurerm_network_interface_backend_address_pool_association" "main" {
     count                 = var.vm_count
     network_interface_id  = azurerm_network_interface.main[count.index].id
     ip_configuration_name = azurerm_lb_backend_address_pool.main.id  
+    backend_address_pool_id = azurerm_lb_backend_address_pool.main.id
 }
 
 # Create Availibility Set 
@@ -148,7 +149,8 @@ resource "azurerm_public_ip" "main" {
 resource "azurerm_linux_virtual_machine" "main" {
   count                   = var.vm_count 
   name                    = "${var.prefix}-vm-${count.index}"
-  location                = azurerm_resource_group.main.name
+  resource_group_name     = azurerm_resource_group.main.name
+  location                = azurerm_resource_group.main.location
   size                    = "Standard_D2s_vs"
   admin_username          = var.admin_username
   admin_password          = var.admin_password
