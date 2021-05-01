@@ -98,13 +98,13 @@ resource "azurerm_lb_backend_address_pool" "main" {
 # Create Network Interface
 resource "azurerm_network_interface" "main" {
     count                = var.vm_count
-    name                 = azurerm_resource_group.main.name 
+    resource_group_name  = azurerm_resource_group.main.name 
     location             = azurerm_resource_group.main.location 
 
     ip_configuration {
       name               = "Development"
       subnet_id          = azurerm_subnet.main.id
-      private_ip_address = "Dynamic"
+      private_ip_address_allocation = "Dynamic"
     }
 
     tags = {
