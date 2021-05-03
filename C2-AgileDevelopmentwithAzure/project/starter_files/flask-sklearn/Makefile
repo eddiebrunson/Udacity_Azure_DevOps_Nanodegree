@@ -8,6 +8,7 @@ install:
 test:
 	#python -m pytest -vv --cov=myrepolib tests/*.py
 	#python -m pytest --nbval notebook.ipynb
+	python -m pytest -vv test_hello.py
 
 
 lint:
