@@ -1,6 +1,6 @@
 variable "prefix" {
     description = " The prefix which should be used for all resources in this project"
-    default = "Udacity101"
+    default = "azure_devOps"
 }
 
 variable "location" {
@@ -18,11 +18,11 @@ variable "admin_username" {
 }
 
 variable "admin_password" {
-    default = "1password"
+    default = "1passWord"
 }
 
-variable "PackerImage" {
-    default = ""
+variable "PackerImageId" {
+    default = "/subscriptions/681cd7c8-7ad2-48d8-9f87-9af1d8236321/resourceGroups/azure_devOps/providers/Microsoft.Compute/images/myPackerImage"
 }
 
 variable "vm_count" {
