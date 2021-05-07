@@ -39,34 +39,26 @@ resource "azurerm_network_security_group" "main" {
     access             = "Allow"
     description        = "Allow access to other Virtual Machines on the subnet"
     destination_address_prefix   = "VirtualNetwork"
-    destination_address_prefixes = [ "VirtualNetwork" ]
     destination_port_range       = "*"
-    destination_port_ranges      = [ "*" ]
     direction                    = "Inbound"
     name                         = "AllowVirtualNetworkInbound"
     priority                     = 101
     protocol                     = "*"
     source_address_prefix        = "VirtualNetwork"
-    source_address_prefixes      = [ "VirtualNetwork" ]
     source_port_range            = "*"
-    source_port_ranges           = [ "*" ]
   }
 
   security_rule { 
     access            = "Deny"
     description       = "Deny all inbound traffic outside of the virtual network from the Internet"
     destination_address_prefix   = "VirtualNetwork"
-    destination_address_prefixes = [ "VirtualNetwork" ]
     destination_port_range       = "*"
-    destination_port_ranges      = [ "*" ]
     direction                    = "Inbound"
-    name                         = "AllowVirtualNetworkInbound"
+    name                         = "DenyInbound"
     priority                     = 100
     protocol                     = "*"
-    source_address_prefix        = "VirtualNetwork"
-    source_address_prefixes      = [ "VirtualNetwork" ]
+    source_address_prefix        = "Internet"
     source_port_range            = "*"
-    source_port_ranges           = [ "*" ]
 }
   tags = {
       environment = var.environment
@@ -81,7 +73,8 @@ resource "azurerm_lb" "main" {
     resource_group_name  = azurerm_resource_group.main.name
 
     frontend_ip_configuration {
-      name              = azurerm_public_ip.main.id
+      name                  = "PublicIPAddress"
+      public_ip_address_id  = azurerm_public_ip.main.id
     }
 
     tags = {
@@ -92,8 +85,7 @@ resource "azurerm_lb" "main" {
 # Create Load Balancer Backend Address Pool
 resource "azurerm_lb_backend_address_pool" "main" {
     loadbalancer_id      = azurerm_lb.main.id
-    name                 = "${var.prefix}-BackEndAddressPool"
-  
+    name                 = "BackEndAddressPool"
 }
 
 # Create Network Interface
@@ -104,7 +96,7 @@ resource "azurerm_network_interface" "main" {
     location             = azurerm_resource_group.main.location 
 
     ip_configuration {
-      name               = "Development"
+      name               = "${var.prefix}-ipconfig"
       subnet_id          = azurerm_subnet.main.id
       private_ip_address_allocation = "Dynamic"
     }
@@ -118,7 +110,7 @@ resource "azurerm_network_interface" "main" {
 resource "azurerm_network_interface_backend_address_pool_association" "main" {
     count                 = var.vm_count
     network_interface_id  = azurerm_network_interface.main[count.index].id
-    ip_configuration_name = azurerm_lb_backend_address_pool.main.id  
+    ip_configuration_name = "${var.prefix}-ipconfig" 
     backend_address_pool_id = azurerm_lb_backend_address_pool.main.id
 }
 
@@ -137,8 +129,8 @@ resource "azurerm_availability_set" "main" {
 # Create Public IP
 resource "azurerm_public_ip" "main" {
     name                   = "${var.prefix}-publicIp"
-    resource_group_name    = "azurerm_resource_group.main.name"
-    location               = "azurerm_resource_group.main.location"
+    resource_group_name    = azurerm_resource_group.main.name
+    location               = azurerm_resource_group.main.location
     allocation_method      = "Static"
 
     tags = {
@@ -150,14 +142,15 @@ resource "azurerm_public_ip" "main" {
 resource "azurerm_linux_virtual_machine" "main" {
   count                   = var.vm_count 
   name                    = "${var.prefix}-vm-${count.index}"
+  computer_name           = "computername" 
   resource_group_name     = azurerm_resource_group.main.name
   location                = azurerm_resource_group.main.location
-  size                    = "Standard_D2s_vs"
+  size                    = "Standard_D2_v3"
   admin_username          = var.admin_username
   admin_password          = var.admin_password
   disable_password_authentication = false
   availability_set_id     = azurerm_availability_set.main.id
-  source_image_id         = var.PackerImage
+  source_image_id         = var.PackerImageId
   network_interface_ids   = [ azurerm_network_interface.main[count.index].id ] 
   
   os_disk {
@@ -170,12 +163,16 @@ resource "azurerm_linux_virtual_machine" "main" {
   }
 }
 
-# Create Managed diskfor Virtual Machines
+# Create Managed disk for Virtual Machines
 resource "azurerm_managed_disk" "main" {
-    name = "${var.prefix}-md"
-    resource_group_name   = azurerm_resource_group.main.location
-    location                = azurerm_resource_group.main.name
+    name                  = "${var.prefix}-md"
+    resource_group_name   = azurerm_resource_group.main.name
+    location              = azurerm_resource_group.main.location
     storage_account_type  = "Standard_LRS"
     create_option         = "Empty"
     disk_size_gb          = "1" 
+
+  tags = {
+   environment = var.environment
+  }
 }
