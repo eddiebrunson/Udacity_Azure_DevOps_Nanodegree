@@ -5,10 +5,10 @@ For this project, I was required to write a Packer template and a Terraform temp
 
 ### Getting Started
 1. Clone this repository
-
-2. Create your infrastructure as code
-
-3. Update this README to reflect how someone would use your code.
+2. Create a tagging policy for Azure 
+3. Create a Packer file to server your image
+4. Create your infrastructure as code (IaC) using Terraform
+5. Deploy your IaC using Terraform 
 
 ### Dependencies
 1. Create an [Azure Account](https://portal.azure.com) 
@@ -21,8 +21,10 @@ For this project, I was required to write a Packer template and a Terraform temp
 #### Deploy a Policy 
 
 1. Write a policy definition to deny the creation of resources that do not have tags. 
-2. Apply the policy definition to the subscription with the name "tagging-policy" 
-3. Use `az policy assignment list` and take a screenshot of your policy 
+2. Export your environment variables for `client_id`, `client_secret`, and `subscription_id`. 
+3. Apply the policy definition to the subscription with the name "tagging-policy" 
+4. Use `az policy assignment list` and to see the out of your policy
+![Policy](screenshots/az_policy_assignment.png)
 
 #### Packer Template 
 
@@ -35,8 +37,11 @@ For this project, I was required to write a Packer template and a Terraform temp
 "inline_shebang": "/bin/sh -x", "type": "shell"
 ```
 3. Ensure that the resource group you specify in Packer for the image is the same specified in Terraform 
+4. Use  `packer build server.json` to deploy the packer image 
 
 #### Terraform Template
+
+In your main.tf configure the following: 
 
 1. Create a Resource Group 
 2. Create a Virtual network and a subnet on that virtual network 
@@ -49,11 +54,24 @@ For this project, I was required to write a Packer template and a Terraform temp
 9. Create managed disks for your virtual machines 
 10. Ensure a variables file allows for customers to configure the number of virtual machines and the deployment at a minimum. 
 
-#### Document your work
+You can customize the values without hard-coding them into the `main.tf` file, by using the `vars.tf` file. 
 
-1. Create a README file documenting the steps you took when implementing this project. 
+For example in the vars.tf file you can include:
+
+```terraform
+variable "location" {
+    description = "The Azure Regin that all resources in the project should be created"
+    default = "eastus"
+}
+```
+Can be used instead of hard-coding eastus and improves the reusability of the code. 
 
 
-### Output
-**Your words here**
+Once finished use `terraform plan -out solution.plan` to deploy the terraform template and review before you deploy. 
+![terraform_plan_out](screenshots/terraform_plan_out.png)
+
+After you confirm everything you can use `terraform apply` to deploy all the resources to Azure. 
+![Terraform Apply](screenshots/terraform_apply.png)
+
+When you are ready to remove everything you simply use `terraform destroy` and to verify everything was deleted you can use `terraform show`. 
 
